@@ -4,6 +4,7 @@ import cl.duocuc.userservice.controller.response.MessageResponse;
 import cl.duocuc.userservice.model.User;
 import cl.duocuc.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,21 @@ public class UserController {
 
     @Operation(summary = "Listar todos los usuarios")
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(userService.findAll());
+    public CollectionModel<EntityModel<User>> getUsers() {
+        List<User> users = userService.findAll();
+
+        List<EntityModel<User>> userModels = users.stream()
+                .map(user -> EntityModel.of(user,
+                        linkTo(methodOn(UserController.class).getUser(user.getId())).withSelfRel()
+                ))
+                .toList();
+
+        return CollectionModel.of(userModels,
+                linkTo(methodOn(UserController.class).getUsers()).withSelfRel()
+        );
     }
 
-    @Operation
+    @Operation(summary = "Listar usuario por identificador")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<User>> getUser(@PathVariable String id) {
         User user = userService.findById(id);
@@ -43,17 +54,17 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
-    @Operation
+    @Operation(summary = "Crear usuario")
     @PostMapping
     public ResponseEntity<MessageResponse> createUser(@RequestBody User request) {
         boolean created = userService.addUser(request);
         if (created) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Usuario creado"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Usuario creado: " + "id = " + request.getId() +  " email = " + request.getEmail()));
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Error: usuario ya existe"));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Error: usuario ya existe: " + "id = " + request.getId() +  " email = " + request.getEmail()));
     }
 
-    @Operation
+    @Operation(summary = "Eliminar usuario por identificador")
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteUser(@PathVariable String id) {
         boolean deleted = userService.removeUser(id);
@@ -63,7 +74,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @Operation
+    @Operation(summary = "Actualizar usuario por identificador")
     @PutMapping("/{id}")
     public ResponseEntity<MessageResponse> replaceUser(@PathVariable String id, @RequestBody User request) {
         boolean updated = userService.updateUser(id, request);
@@ -73,7 +84,17 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @Operation
+    @Operation(summary = "Activar usuario por identificador")
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<MessageResponse> activateUser(@PathVariable String id) {
+        boolean activated = userService.activateUser(id);
+        if (activated) {
+            return ResponseEntity.ok(new MessageResponse("Usuario activado"));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "Desactivar usuario por identificador")
     @PatchMapping("/{id}/desactivate")
     public ResponseEntity<MessageResponse> desactivateUser(@PathVariable String id) {
         boolean deactivated = userService.desactivateUser(id);
@@ -83,4 +104,3 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 }
-

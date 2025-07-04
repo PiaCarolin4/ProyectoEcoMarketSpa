@@ -57,11 +57,13 @@ public class UserService {
         return true;
     }
 
-    public void activateUser(String id) {
+    public boolean activateUser(String id) {
         User user = findById(id);
         if (user != null) {
             user.setActive(true);
             UserRepository.save(user);
+            return true;
         }
+        return false;
     }
 }
