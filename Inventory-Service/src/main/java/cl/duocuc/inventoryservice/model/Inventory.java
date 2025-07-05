@@ -1,18 +1,22 @@
 package cl.duocuc.inventoryservice.model;
 
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "inventory")
 public class Inventory {
+
+    @Id
     private String id;
-    private String productId;
-    private String storeId;
+    private String storeid;
     private int quantity;
 
 

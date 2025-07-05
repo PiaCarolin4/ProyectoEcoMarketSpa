@@ -54,6 +54,7 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+
     @Operation(summary = "Crear usuario")
     @PostMapping
     public ResponseEntity<MessageResponse> createUser(@RequestBody User request) {

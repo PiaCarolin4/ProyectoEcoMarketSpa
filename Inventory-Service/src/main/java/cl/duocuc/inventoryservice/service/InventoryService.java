@@ -1,57 +1,49 @@
 package cl.duocuc.inventoryservice.service;
 
 import cl.duocuc.inventoryservice.model.Inventory;
+import cl.duocuc.inventoryservice.repository.InventoryRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InventoryService {
-    private static final List<Inventory> inventoryList = new ArrayList<>();
+    
+    private final InventoryRepository InventoryRepository;
+
+    public InventoryService(InventoryRepository inventoryRepository) {
+        this.InventoryRepository = inventoryRepository;
+    }
 
     public List<Inventory> findAll() {
-        return inventoryList;
+        return InventoryRepository.findAll();
     }
 
-    public Optional<Inventory> findById(String id) {
-        return inventoryList.stream()
-                .filter(i -> i.getId().equals(id))
-                .findFirst();
+    public Inventory findById(String id) {
+        return InventoryRepository.findById(id).orElse(null);
     }
 
-    public List<Inventory> findByProductId(String productId) {
-        return inventoryList.stream()
-                .filter(i -> i.getProductId().equals(productId))
-                .toList();
-    }
-
-    public Optional<Inventory> create(Inventory inventory) {
-        if (findById(inventory.getId()).isPresent()) {
-            return Optional.empty();
+    public boolean addInventory(Inventory inventory) {
+        if (InventoryRepository.existsById(inventory.getId())) {
+            return false;
         }
-        inventoryList.add(inventory);
-        return Optional.of(inventory);
+        InventoryRepository.save(inventory);
+        return true;
     }
 
-    public boolean delete(String id) {
-        return inventoryList.removeIf(i -> i.getId().equals(id));
+    public boolean updateInventory(String id, Inventory inventory) {
+        if (InventoryRepository.existsById(id)) {
+            InventoryRepository.save(inventory);
+            return true;
+        }
+        return false;
     }
 
-    public Optional<Inventory> update(String id, Inventory updated) {
-        return findById(id).map(inv -> {
-            inv.setProductId(updated.getProductId());
-            inv.setStoreId(updated.getStoreId());
-            inv.setQuantity(updated.getQuantity());
-            return inv;
-        });
-    }
-
-    public Optional<Inventory> adjustQuantity(String id, int delta) {
-        return findById(id).map(inv -> {
-            inv.setQuantity(inv.getQuantity() + delta);
-            return inv;
-        });
+    public boolean removeInventory(String id) {
+        if (InventoryRepository.existsById(id)) {
+            InventoryRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

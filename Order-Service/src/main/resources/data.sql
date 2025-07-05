@@ -1,0 +1,16 @@
+INSERT INTO orders (id, userid, productid, total, status) VALUES
+                                                           ('O001', '1', ARRAY['P001','P003','P005'], 19990, 'SENT'),
+                                                           ('O002', '2', ARRAY['P002'], 4990, 'DELIVERED'),
+                                                           ('O003', '3', ARRAY['P003','P007'], 12990, 'CANCELLED'),
+                                                           ('O004', '4', ARRAY['P004'], 5990, 'PENDING'),
+                                                           ('O005', '5', ARRAY['P005'], 6490, 'SENT'),
+                                                           ('O006', '6', ARRAY['P006'], 3990, 'DELIVERED'),
+                                                           ('O007', '7', ARRAY['P007','P010','P011'], 12990, 'CANCELLED'),
+                                                           ('O008', '8', ARRAY['P008','P009'], 8490, 'PENDING'),
+                                                           ('O009', '9', ARRAY['P009'], 2490, 'SENT'),
+                                                           ('O010', '10', ARRAY['P010'], 2990, 'DELIVERED'),
+                                                           ('O011', '11', ARRAY['P011'], 3990, 'CANCELLED'),
+                                                           ('O012', '12', ARRAY['P012'], 4990, 'PENDING'),
+                                                           ('O013', '13', ARRAY['P013'], 5990, 'SENT'),
+                                                           ('O014', '14', ARRAY['P014'], 6990, 'DELIVERED'),
+                                                           ('O015', '15', ARRAY['P015'], 7990, 'CANCELLED');

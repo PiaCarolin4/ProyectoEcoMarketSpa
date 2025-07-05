@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class ProductTest {
+class ProductServiceTest {
 
     @Autowired
     private ProductService productService;
@@ -55,7 +55,7 @@ class ProductTest {
         Product modifiedProduct = new Product("P003", "Botella de acero inoxidable", "Botella térmica reutilizable, 500 ml", 1000);
         productService.updateProduct("P003", modifiedProduct);
         Product newProduct = productService.findById("P003");
-        assertEquals(1000, newProduct.getPrecio());
+        assertEquals(1000, newProduct.getPrice());
 
     }
 

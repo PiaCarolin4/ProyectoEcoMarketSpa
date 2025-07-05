@@ -1,20 +1,25 @@
 package cl.duocuc.orderservice.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
     private String id;
-    private String userId;
-    private List<String> productId;
+    private String userid;
+    private List<String> productid;
     private Double total;
     private String status;
 
